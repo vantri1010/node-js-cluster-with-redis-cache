@@ -1,58 +1,51 @@
-const express = require("express");
-const redis = require("redis");
-
-const keys = require("./middlewares/keys");
-
-const redisMiddleware = require("./middlewares/redis-middleware");
-
-const usersApi = require("./jsonplaceholder/jph-users-api");
-const postsApi = require("./jsonplaceholder/jph-posts-api");
-const commentsApi = require("./jsonplaceholder/jph-comments-api");
+import express from "express";
+import redis from "redis";
+import { fetchPosts } from "./jsonplaceholder/jph-posts-api.js";
+import { fetchComments } from "./jsonplaceholder/jph-comments-api.js";
+import { fetchUsers } from "./jsonplaceholder/jph-users-api.js";
+import { redisMiddleware } from "./middlewares/redis-middleware.js";
+import { redisHost, redisPort } from "./middlewares/keys.js";
 
 const routes = express.Router();
-
 routes.use(redisMiddleware);
-let client = redis.createClient({
-    host: keys.redisHost,
-    port: keys.redisPort
+
+// const client = redis.createClient({
+//     host: redisHost,
+//     port: redisPort,
+// });
+
+
+routes.get("/posts", async (request, response) => {
+    try {
+        const data = await fetchPosts();
+        console.log(`Data Fetched from Server with process ID - ${process.pid}`);
+        client.set("posts", JSON.stringify(data));
+        response.send(data);
+    } catch (error) {
+        response.status(500).send("Something went wrong!");
+    }
 });
-routes.get("/posts", (request, response) => {
-    postsApi.fetchPosts().then(
-        response => response.json(),
-        reason => Promise.reject(reason)
-    ).then(
-        data => {
-            console.log(`Data Fetched from Server with process ID - ${process.pid}`);
-            client.set("posts",JSON.stringify(data));
-            response.send(data);
-        },
-        reason => response.status(500).send("Something went wrong!")
-    );
+
+routes.get("/comments", async (request, response) => {
+    try {
+        const data = await fetchComments();
+        console.log(`Data Fetched from Server with process ID - ${process.pid}`);
+        client.set("comments", 300, JSON.stringify(data));
+        response.send(data);
+    } catch (error) {
+        response.status(500).send("Something went wrong!");
+    }
 });
-routes.get("/comments", (request, response) => {
-    commentsApi.fetchComments().then(
-        response => response.json(),
-        reason => Promise.reject(reason)
-    ).then(
-        data => {
-            console.log(`Data Fetched from Server with process ID - ${process.pid}`);
-            client.setex("comments",300,JSON.stringify(data));
-            response.send(data);
-        },
-        reason => response.status(500).send("Something went wrong!")
-    );
+
+routes.get("/users", async (request, response) => {
+    try {
+        const data = await fetchUsers();
+        console.log(`Data Fetched from Server with process ID - ${process.pid}`);
+        client.set("users", JSON.stringify(data));
+        response.send(data);
+    } catch (error) {
+        response.status(500).send("Something went wrong!");
+    }
 });
-routes.get("/users", (request, response) => {
-    usersApi.fetchUsers().then(
-        response => response.json(),
-        reason => Promise.reject(reason)
-    ).then(
-        data => {
-            console.log(`Data Fetched from Server with process ID - ${process.pid}`);
-            client.set("users",JSON.stringify(data));
-            response.send(data);
-        },
-        reason => response.status(500).send("Something went wrong!")
-    );
-});
-module.exports = routes;
+
+export default routes;

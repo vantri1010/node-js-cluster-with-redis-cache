@@ -1,12 +1,16 @@
-const fetch = require("node-fetch");
+import fetch from "node-fetch";
 
-class JphCommentsApi {
-    constructor() {
-
-    }
-    fetchComments() {
-        return fetch("https://jsonplaceholder.typicode.com/comments");
+export async function fetchComments() {
+    try {
+        const response = await fetch("https://jsonplaceholder.typicode.com/comments");
+        if (!response.ok) {
+            throw new Error(`Error fetching comments: ${response.statusText}`);
+        }
+        return response.json();
+    } catch (error) {
+        console.error("Error fetching comments:", error);
+        throw error;
     }
 }
 
-module.exports = new JphCommentsApi();
+// module.exports = new JphCommentsApi();

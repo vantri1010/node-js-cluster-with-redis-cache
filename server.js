@@ -1,7 +1,6 @@
-const express = require("express");
-const jphRoutes = require("./jph-routes");
+import express from "express";
+import jphRoutes from "./jph-routes.js";
 const PORT = process.env.PORT || 3000;
-
 const app = express();
 
 app.use("/jph",jphRoutes);
