@@ -12,5 +12,3 @@ export async function fetchUsers() {
         throw error;
     }
 }
-
-// module.exports = new JphUsersApi();
