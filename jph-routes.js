@@ -17,7 +17,7 @@ routes.get("/posts", async (request, response) => {
       console.log(`Posts Fetched from Server with process ID - ${process.pid}`)
     );
     client.set("posts", JSON.stringify(data), {
-      EX: 20,
+      EX: 100,
       NX: true,
     });
     response.send(data);

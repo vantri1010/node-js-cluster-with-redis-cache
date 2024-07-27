@@ -1,0 +1,3 @@
+loadtest -n 1000 -c 200 --rps 100 http://localhost/jph/posts
+loadtest -n 1000 -c 200 --rps 100 http://localhost/jph/users
+loadtest -n 1000 -c 200 --rps 100 http://localhost/jph/comments
