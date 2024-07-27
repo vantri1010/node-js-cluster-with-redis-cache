@@ -1,10 +1,8 @@
 import express from "express";
-import redis from "redis";
 import { fetchPosts } from "./jsonplaceholder/jph-posts-api.js";
 import { fetchComments } from "./jsonplaceholder/jph-comments-api.js";
 import { fetchUsers } from "./jsonplaceholder/jph-users-api.js";
 import { redisMiddleware } from "./middlewares/redis-middleware.js";
-import { redisHost, redisPort } from "./middlewares/keys.js";
 
 import { client } from "./middlewares/redisClient.js";
 
